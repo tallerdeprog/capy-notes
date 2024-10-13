@@ -14,22 +14,29 @@ public class proyecto {
     public static void main(String[] args) {
         JFrame frame = new JFrame("CAP N' CAP");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 300);
-        frame.setLayout(new BorderLayout());
+        frame.setSize(600, 400);  // Ajustar el tamaño de la ventana
+
+        // Crear un panel personalizado que soporte la imagen de fondo
+        JPanel panelFondo = new FondoConImagen("assets/imagenes/capibaraFondo1.png");
+        panelFondo.setLayout(new BorderLayout());
 
         // Título
         JLabel titleLabel = new JLabel("CAP N' CAP", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        frame.add(titleLabel, BorderLayout.NORTH);
-
+        titleLabel.setForeground(Color.WHITE);  // Cambia el color del texto a blanco para que contraste con el fondo
+        panelFondo.add(titleLabel, BorderLayout.NORTH);
+        
         // Panel de botones
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(4, 1));
+        buttonPanel.setLayout(new GridLayout(4, 1, 10, 10));  // Espacio entre los botones
+        buttonPanel.setOpaque(false);  // Hacer el panel de botones transparente para ver la imagen de fondo
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 50, 10, 50));
 
         // Botón 1: Calendario
         JButton btnCalendario = new JButton("Mostrar Calendario");
         btnCalendario.addActionListener(e -> mostrarCalendario(frame));  // Pasamos el frame como referencia
         buttonPanel.add(btnCalendario);
+        
 
         // Botón 2: Añadir Evento
         JButton btnAgregarEvento = new JButton("Añadir Evento");
@@ -46,23 +53,23 @@ public class proyecto {
         btnMostrarImagen.addActionListener(e -> mostrarImagen());
         buttonPanel.add(btnMostrarImagen);
 
-        frame.add(buttonPanel, BorderLayout.CENTER);
+        // Añadir el panel de botones al centro
+        panelFondo.add(buttonPanel, BorderLayout.CENTER);
+
+        // Añadir el panel de fondo al frame
+        frame.add(panelFondo);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
     private static void mostrarCalendario(JFrame parentFrame) {
-        // Verificamos si ya hay una ventana abierta
         if (ventanaCalendario == null) {
-            // Crear la ventana de calendario
             ventanaCalendario = new JDialog(parentFrame, "Calendario", true);  // Ventana modal
             ventanaCalendario.setSize(400, 400);
 
-            // Crear el panel de calendario y añadirlo a la ventana
             calendario calendario = new calendario();
             ventanaCalendario.add(calendario);
 
-            // Asegurarse de liberar la ventana cuando se cierre
             ventanaCalendario.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent e) {
@@ -70,11 +77,9 @@ public class proyecto {
                 }
             });
 
-            // Centrar la ventana en la pantalla
             ventanaCalendario.setLocationRelativeTo(parentFrame);
             ventanaCalendario.setVisible(true);
         } else {
-            // Si ya hay una ventana abierta, opcionalmente puedes mostrar un mensaje
             JOptionPane.showMessageDialog(parentFrame, "El calendario ya está abierto.");
         }
     }
@@ -112,8 +117,23 @@ public class proyecto {
     }
 
     private static void mostrarImagen() {
-        // Cambia "ruta/a/tu/imagen.jpg" por la ruta real de tu imagen
         ImageIcon imagen = new ImageIcon("assets/imagenes/capibara.jpg");
         JOptionPane.showMessageDialog(null, imagen, "capibara", JOptionPane.INFORMATION_MESSAGE);
+    }
+}
+
+// Clase para crear un JPanel con una imagen de fondo
+class FondoConImagen extends JPanel {
+    private Image imagenFondo;
+
+    public FondoConImagen(String rutaImagen) {
+        imagenFondo = new ImageIcon(rutaImagen).getImage();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        // Dibujar la imagen de fondo en todo el panel
+        g.drawImage(imagenFondo, 0, 0, getWidth(), getHeight(), this);
     }
 }
