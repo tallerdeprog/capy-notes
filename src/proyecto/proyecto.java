@@ -1,4 +1,5 @@
 package proyecto;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -6,6 +7,9 @@ import java.util.ArrayList;
 public class proyecto {
 
     private static final ArrayList<String> eventos = new ArrayList<>();
+    
+    // Variable para almacenar la ventana del calendario
+    private static JDialog ventanaCalendario = null;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("CAP N' CAP");
@@ -24,7 +28,7 @@ public class proyecto {
 
         // Botón 1: Calendario
         JButton btnCalendario = new JButton("Mostrar Calendario");
-        btnCalendario.addActionListener(e -> mostrarCalendario());
+        btnCalendario.addActionListener(e -> mostrarCalendario(frame));  // Pasamos el frame como referencia
         buttonPanel.add(btnCalendario);
 
         // Botón 2: Añadir Evento
@@ -43,12 +47,36 @@ public class proyecto {
         buttonPanel.add(btnMostrarImagen);
 
         frame.add(buttonPanel, BorderLayout.CENTER);
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
-    private static void mostrarCalendario() {
-        // Aquí puedes implementar el calendario
-        JOptionPane.showMessageDialog(null, "Función de calendario aún no implementada.");
+    private static void mostrarCalendario(JFrame parentFrame) {
+        // Verificamos si ya hay una ventana abierta
+        if (ventanaCalendario == null) {
+            // Crear la ventana de calendario
+            ventanaCalendario = new JDialog(parentFrame, "Calendario", true);  // Ventana modal
+            ventanaCalendario.setSize(400, 400);
+
+            // Crear el panel de calendario y añadirlo a la ventana
+            calendario calendario = new calendario();
+            ventanaCalendario.add(calendario);
+
+            // Asegurarse de liberar la ventana cuando se cierre
+            ventanaCalendario.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    ventanaCalendario = null;  // Liberar la referencia cuando se cierre
+                }
+            });
+
+            // Centrar la ventana en la pantalla
+            ventanaCalendario.setLocationRelativeTo(parentFrame);
+            ventanaCalendario.setVisible(true);
+        } else {
+            // Si ya hay una ventana abierta, opcionalmente puedes mostrar un mensaje
+            JOptionPane.showMessageDialog(parentFrame, "El calendario ya está abierto.");
+        }
     }
 
     private static void agregarEvento() {
@@ -85,7 +113,7 @@ public class proyecto {
 
     private static void mostrarImagen() {
         // Cambia "ruta/a/tu/imagen.jpg" por la ruta real de tu imagen
-        ImageIcon imagen = new ImageIcon("ruta/a/tu/imagen.jpg");
-        JOptionPane.showMessageDialog(null, imagen, "Imagen", JOptionPane.INFORMATION_MESSAGE);
+        ImageIcon imagen = new ImageIcon("assets/imagenes/capibara.jpg");
+        JOptionPane.showMessageDialog(null, imagen, "capibara", JOptionPane.INFORMATION_MESSAGE);
     }
 }
