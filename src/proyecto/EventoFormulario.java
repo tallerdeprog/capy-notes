@@ -33,15 +33,39 @@ public class EventoFormulario extends JFrame {
 
         // Etiqueta y campos para la hora
         gbc.gridx = 0; gbc.gridy = 2;
-        add(new JLabel("Hora:"), gbc);
+        
         JPanel horaPanel = new JPanel(new FlowLayout());
-        horaPanel.add(new JComboBox<>(new String[]{"Horas"}));
-        horaPanel.add(new JComboBox<>(new String[]{"Minutos"}));
+        ////
+        JLabel labelHoras = new JLabel("Hora:");
+        horaPanel.add(labelHoras);
+        String[] horas = new String[13];
+        for (int i = 0; i <= 12; i++) {
+            horas[i] = String.format("%02d", i); // Formatea a dos dígitos
+        }
+        JComboBox<String> comboHoras = new JComboBox<>(horas);
+        horaPanel.add(comboHoras);
+
+        // Etiqueta y ComboBox para minutos
+        JLabel labelMinutos = new JLabel("Minuto:");
+        horaPanel.add(labelMinutos);
+        String[] minutos = new String[60];
+        for (int i = 0; i < 60; i++) {
+            minutos[i] = String.format("%02d", i); // Formatea a dos dígitos
+        }
+        JComboBox<String> comboMinutos = new JComboBox<>(minutos);
+        horaPanel.add(comboMinutos);
+        ////
+        
+        
+        
         horaPanel.add(new JRadioButton("AM"));
         horaPanel.add(new JRadioButton("PM"));
         gbc.gridx = 1; gbc.gridy = 2;
         add(horaPanel, gbc);
-
+        
+        
+        
+        
         // Etiqueta y área para la descripción
         gbc.gridx = 0; gbc.gridy = 3;
         add(new JLabel("Descripción:"), gbc);
@@ -59,6 +83,5 @@ public class EventoFormulario extends JFrame {
     }
 
     public static void main(String[] args) {
-        new EventoFormulario();
     }
 }
