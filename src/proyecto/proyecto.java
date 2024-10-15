@@ -3,6 +3,8 @@ package proyecto;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class proyecto {
 
@@ -10,13 +12,14 @@ public class proyecto {
     
     // Variable para almacenar la ventana del calendario
     private static JDialog ventanaCalendario = null;
+    private static JDialog ventanaEventoFormulario = null;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("CAP N' CAP");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600, 400);  // Ajustar el tamaño de la ventana
 
-        // Crear un panel personalizado que soporte la imagen de fondo
+        // Crear un panel personalizado que soporte la imagen de fondo y capibaras cayendo
         JPanel panelFondo = new FondoConImagen("assets/imagenes/capibaraFondo1.png");
         panelFondo.setLayout(new BorderLayout());
 
@@ -37,10 +40,9 @@ public class proyecto {
         btnCalendario.addActionListener(e -> mostrarCalendario(frame));  // Pasamos el frame como referencia
         buttonPanel.add(btnCalendario);
         
-
         // Botón 2: Añadir Evento
-        JButton btnAgregarEvento = new JButton("Añadir Evento");
-        btnAgregarEvento.addActionListener(e -> agregarEvento());
+        JButton btnAgregarEvento = new JButton("Mostrar Evento Calendario");
+        btnAgregarEvento.addActionListener(e -> mostrarEventoFormulario(frame));
         buttonPanel.add(btnAgregarEvento);
 
         // Botón 3: Visualizar Eventos
@@ -84,23 +86,25 @@ public class proyecto {
         }
     }
 
-    private static void agregarEvento() {
-        JPanel panel = new JPanel(new GridLayout(0, 1));
-        JTextField nombre = new JTextField("Nombre del evento");
-        JTextField fecha = new JTextField("Fecha (DD/MM/YYYY)");
-        JTextField hora = new JTextField("Hora (HH:MM)");
-        JTextField descripcion = new JTextField("Descripción");
-        
-        panel.add(nombre);
-        panel.add(fecha);
-        panel.add(hora);
-        panel.add(descripcion);
+    private static void mostrarEventoFormulario(JFrame parentFrame) {
+        if (ventanaEventoFormulario == null) {
+            ventanaEventoFormulario = new JDialog(parentFrame, "Evento Formulario", true);  // Ventana modal
+            ventanaEventoFormulario.setSize(400, 400);
 
-        int result = JOptionPane.showConfirmDialog(null, panel, "Añadir Evento", JOptionPane.OK_CANCEL_OPTION);
-        if (result == JOptionPane.OK_OPTION) {
-            eventos.add("Nombre: " + nombre.getText() + ", Fecha: " + fecha.getText() + 
-                         ", Hora: " + hora.getText() + ", Descripción: " + descripcion.getText());
-            JOptionPane.showMessageDialog(null, "Evento agregado.");
+            EventoFormulario EventoFormulario = new EventoFormulario();
+            ventanaEventoFormulario.add(EventoFormulario);
+
+            ventanaEventoFormulario.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    ventanaEventoFormulario = null;  // Liberar la referencia cuando se cierre
+                }
+            });
+
+            ventanaEventoFormulario.setLocationRelativeTo(parentFrame);
+            ventanaEventoFormulario.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(parentFrame, "El calendario ya está abierto.");
         }
     }
 
@@ -122,12 +126,53 @@ public class proyecto {
     }
 }
 
-// Clase para crear un JPanel con una imagen de fondo
+// Clase para crear un JPanel con una imagen de fondo y capibaras cayendo
 class FondoConImagen extends JPanel {
     private Image imagenFondo;
+    private List<Point> posicionesCapibaras;
+    private List<Image> imagenesCapibaras;
+    private Random random;
 
     public FondoConImagen(String rutaImagen) {
         imagenFondo = new ImageIcon(rutaImagen).getImage();
+        random = new Random();
+        posicionesCapibaras = new ArrayList<>();
+        imagenesCapibaras = new ArrayList<>();
+        inicializarCapibaras();
+        
+        // Temporizador para mover los capibaras
+        Timer timer = new Timer(50, e -> moverCapibaras());
+        timer.start();
+    }
+
+    private void inicializarCapibaras() {
+        Image imagenCapibara = new ImageIcon("assets/imagenes/capibaraParticula.png").getImage();
+        
+        for (int i = 0; i < 5; i++) {
+            // Asegurarse de que el ancho y alto sean válidos
+            int width = getWidth();
+            int height = getHeight();
+            if (width > 0 && height > 0) {
+                posicionesCapibaras.add(new Point(random.nextInt(width), random.nextInt(height)));
+                imagenesCapibaras.add(imagenCapibara);
+            }
+        }
+    }
+
+    private void moverCapibaras() {
+        int width = getWidth();
+        int height = getHeight();
+
+        for (int i = 0; i < posicionesCapibaras.size(); i++) {
+            Point posicion = posicionesCapibaras.get(i);
+            posicion.y += 5;  // Mover los capibaras hacia abajo
+
+            if (posicion.y > height) {
+                posicion.y = 0;  // Reiniciar al llegar al fondo
+                posicion.x = random.nextInt(width);  // Nueva posición horizontal aleatoria
+            }
+        }
+        repaint();  // Actualizar el dibujo del panel
     }
 
     @Override
@@ -135,5 +180,11 @@ class FondoConImagen extends JPanel {
         super.paintComponent(g);
         // Dibujar la imagen de fondo en todo el panel
         g.drawImage(imagenFondo, 0, 0, getWidth(), getHeight(), this);
+
+        // Dibujar las imágenes de los capibaras
+        for (int i = 0; i < posicionesCapibaras.size(); i++) {
+            Point posicion = posicionesCapibaras.get(i);
+            g.drawImage(imagenesCapibaras.get(i), posicion.x, posicion.y, 50, 50, this);
+        }
     }
 }
