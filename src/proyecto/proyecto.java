@@ -10,7 +10,7 @@ public class proyecto {
 
     private static final ArrayList<String> eventos = new ArrayList<>();
     
-    // Variable para almacenar la ventana del calendario
+    //Almacena la ventana del calendario y agregar eventos
     private static JDialog ventanaCalendario = null;
     private static JDialog ventanaEventoFormulario = null;
 
@@ -19,25 +19,25 @@ public class proyecto {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600, 400);  // Ajustar el tamaño de la ventana
 
-        // Crear un panel personalizado que soporte la imagen de fondo y capibaras cayendo
+        //  panel personalizado que soporte la imagen de fondo y capibaras cayendo
         JPanel panelFondo = new FondoConImagen("assets/imagenes/capibaraFondo1.png");
         panelFondo.setLayout(new BorderLayout());
 
         // Título
         JLabel titleLabel = new JLabel("CAP N' CAP", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(Color.WHITE);  // Cambia el color del texto a blanco para que contraste con el fondo
+        titleLabel.setForeground(Color.WHITE);  
         panelFondo.add(titleLabel, BorderLayout.NORTH);
         
         // Panel de botones
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(4, 1, 10, 10));  // Espacio entre los botones
-        buttonPanel.setOpaque(false);  // Hacer el panel de botones transparente para ver la imagen de fondo
+        buttonPanel.setOpaque(false);  // Transparencia
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 50, 10, 50));
 
         // Botón 1: Calendario
         JButton btnCalendario = new JButton("Mostrar Calendario");
-        btnCalendario.addActionListener(e -> mostrarCalendario(frame));  // Pasamos el frame como referencia
+        btnCalendario.addActionListener(e -> mostrarCalendario(frame));
         buttonPanel.add(btnCalendario);
         
         // Botón 2: Añadir Evento
@@ -55,7 +55,7 @@ public class proyecto {
         btnMostrarImagen.addActionListener(e -> mostrarImagen());
         buttonPanel.add(btnMostrarImagen);
 
-        // Añadir el panel de botones al centro
+        //panel de botones al centro
         panelFondo.add(buttonPanel, BorderLayout.CENTER);
 
         // Añadir el panel de fondo al frame
@@ -75,7 +75,7 @@ public class proyecto {
             ventanaCalendario.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent e) {
-                    ventanaCalendario = null;  // Liberar la referencia cuando se cierre
+                    ventanaCalendario = null;  
                 }
             });
 
@@ -88,7 +88,7 @@ public class proyecto {
 
     private static void mostrarEventoFormulario(JFrame parentFrame) {
         if (ventanaEventoFormulario == null) {
-            ventanaEventoFormulario = new JDialog(parentFrame, "Evento Formulario", true);  // Ventana modal
+            ventanaEventoFormulario = new JDialog(parentFrame, "Evento Formulario", true);  
             ventanaEventoFormulario.setSize(400, 400);
 
             EventoFormulario EventoFormulario = new EventoFormulario();
@@ -97,7 +97,7 @@ public class proyecto {
             ventanaEventoFormulario.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent e) {
-                    ventanaEventoFormulario = null;  // Liberar la referencia cuando se cierre
+                    ventanaEventoFormulario = null;  // 
                 }
             });
 
@@ -133,6 +133,9 @@ class FondoConImagen extends JPanel {
     private List<Image> imagenesCapibaras;
     private Random random;
 
+/////////////////////////////////////////////////////////////////////////////////////    
+    
+    
     public FondoConImagen(String rutaImagen) {
         imagenFondo = new ImageIcon(rutaImagen).getImage();
         random = new Random();
