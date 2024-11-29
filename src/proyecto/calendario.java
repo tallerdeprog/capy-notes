@@ -12,7 +12,7 @@ import javax.swing.Timer;
 
 public class calendario extends JPanel {
 
-    private JLabel labelHora;
+    private final JLabel labelHora;
 
     public calendario() {
         setLayout(new BorderLayout());

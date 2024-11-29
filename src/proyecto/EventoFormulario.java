@@ -1,41 +1,58 @@
-
 package proyecto;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class EventoFormulario extends JFrame {
+public class EventoFormulario {
 
-    public EventoFormulario() {
-        setTitle("Añadir Evento");
-        setSize(400, 300);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridBagLayout());
+    // Crear un JPanel que contenga todos los componentes
+    public JPanel createFormularioPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(5, 15, 5, 15);  // Más margen izquierdo y derecho, menos arriba y abajo
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Etiqueta y campo para el nombre del evento
         gbc.gridx = 0; gbc.gridy = 0;
-        add(new JLabel("Nombre del evento:"), gbc);
+        panel.add(new JLabel("Nombre del evento:"), gbc);
+        JTextField nombreEvento = new JTextField(20);
         gbc.gridx = 1; gbc.gridy = 0;
-        add(new JTextField(20), gbc);
+        panel.add(nombreEvento, gbc);
 
         // Etiqueta y campos para la fecha
         gbc.gridx = 0; gbc.gridy = 1;
-        add(new JLabel("Fecha:"), gbc);
+        panel.add(new JLabel("Fecha:"), gbc);
         JPanel fechaPanel = new JPanel(new FlowLayout());
-        fechaPanel.add(new JComboBox<>(new String[]{"Día"}));
-        fechaPanel.add(new JComboBox<>(new String[]{"Mes"}));
-        fechaPanel.add(new JComboBox<>(new String[]{"Año"}));
+
+        // Días
+        String[] dias = new String[31];
+        for (int i = 0; i < 31; i++) {
+            dias[i] = String.format("%02d", i + 1); // Días de 01 a 31
+        }
+        JComboBox<String> comboDías = new JComboBox<>(dias);
+        fechaPanel.add(comboDías);
+
+        // Meses
+        String[] meses = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
+        JComboBox<String> comboMeses = new JComboBox<>(meses);
+        fechaPanel.add(comboMeses);
+
+        // Años
+        String[] años = new String[101];
+        for (int i = 0; i < 101; i++) {
+            años[i] = String.valueOf(2024 + i); // Ejemplo de años entre 2024 y 2124
+        }
+        JComboBox<String> comboAños = new JComboBox<>(años);
+        fechaPanel.add(comboAños);
+
         gbc.gridx = 1; gbc.gridy = 1;
-        add(fechaPanel, gbc);
+        panel.add(fechaPanel, gbc);
 
         // Etiqueta y campos para la hora
         gbc.gridx = 0; gbc.gridy = 2;
-        
         JPanel horaPanel = new JPanel(new FlowLayout());
-        ////
         JLabel labelHoras = new JLabel("Hora:");
         horaPanel.add(labelHoras);
         String[] horas = new String[13];
@@ -54,34 +71,78 @@ public class EventoFormulario extends JFrame {
         }
         JComboBox<String> comboMinutos = new JComboBox<>(minutos);
         horaPanel.add(comboMinutos);
-        ////
-        
-        
-        
-        horaPanel.add(new JRadioButton("AM"));
-        horaPanel.add(new JRadioButton("PM"));
+
+        // Botones AM/PM
+        ButtonGroup group = new ButtonGroup();
+        JRadioButton amButton = new JRadioButton("AM");
+        JRadioButton pmButton = new JRadioButton("PM");
+        group.add(amButton);
+        group.add(pmButton);
+        horaPanel.add(amButton);
+        horaPanel.add(pmButton);
+
         gbc.gridx = 1; gbc.gridy = 2;
-        add(horaPanel, gbc);
-        
-        
-        
-        
+        panel.add(horaPanel, gbc);
+
         // Etiqueta y área para la descripción
         gbc.gridx = 0; gbc.gridy = 3;
-        add(new JLabel("Descripción:"), gbc);
+        panel.add(new JLabel("Descripción:"), gbc);
         gbc.gridx = 1; gbc.gridy = 3;
-        add(new JTextArea(3, 20), gbc);
+        JTextArea textArea = new JTextArea(5, 20);  // Aumenté el tamaño
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        panel.add(scrollPane, gbc);
 
         // Botones OK y Cancelar
         JPanel buttonPanel = new JPanel();
-        buttonPanel.add(new JButton("OK"));
-        buttonPanel.add(new JButton("Cancelar"));
+        JButton btnOk = new JButton("OK");
+        btnOk.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String eventoNombre = nombreEvento.getText();
+                String fechaSeleccionada = comboDías.getSelectedItem() + " " + comboMeses.getSelectedItem() + " " + comboAños.getSelectedItem();
+                String horaSeleccionada = comboHoras.getSelectedItem() + ":" + comboMinutos.getSelectedItem() + " " + (amButton.isSelected() ? "AM" : "PM");
+                String descripcion = textArea.getText();
+
+                if (eventoNombre.isEmpty() || descripcion.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos.");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Evento agregado:\n" + eventoNombre + "\n" + fechaSeleccionada + "\n" + horaSeleccionada + "\n" + descripcion);
+                }
+            }
+        });
+        buttonPanel.add(btnOk);
+
+        JButton btnCancel = new JButton("Cancelar");
+        btnCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Cerrar ventana sin hacer nada
+                
+            }
+        });
+        buttonPanel.add(btnCancel);
+
         gbc.gridx = 1; gbc.gridy = 4;
-        add(buttonPanel, gbc);
+        panel.add(buttonPanel, gbc);
 
-        setVisible(true);
+        return panel; // Devolver el panel
     }
 
-    public static void main(String[] args) {
-    }
+    /*public static void main(String[] args) {
+        // Crear la ventana
+        JFrame ventana = new JFrame("Formulario de Evento");
+        EventoFormulario formulario = new EventoFormulario();
+
+        // Crear un JScrollPane para manejar el reajuste
+        JScrollPane scrollPanel = new JScrollPane(formulario.createFormularioPanel());
+        ventana.add(scrollPanel);
+
+        ventana.setSize(600, 600);
+        ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ventana.setLocationRelativeTo(null);  // Centrar la ventana
+        ventana.setVisible(true);
+        ventana.setResizable(true);
+    }*/
 }
+
+
