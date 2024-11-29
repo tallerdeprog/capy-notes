@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 
 public class EventoFormulario {
 
-    // Crear un JPanel que contenga todos los componentes
+    // Método para crear el formulario del evento
     public JPanel createFormularioPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -95,29 +95,37 @@ public class EventoFormulario {
         // Botones OK y Cancelar
         JPanel buttonPanel = new JPanel();
         JButton btnOk = new JButton("OK");
-        btnOk.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String eventoNombre = nombreEvento.getText();
-                String fechaSeleccionada = comboDías.getSelectedItem() + " " + comboMeses.getSelectedItem() + " " + comboAños.getSelectedItem();
-                String horaSeleccionada = comboHoras.getSelectedItem() + ":" + comboMinutos.getSelectedItem() + " " + (amButton.isSelected() ? "AM" : "PM");
-                String descripcion = textArea.getText();
+btnOk.addActionListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String eventoNombre = nombreEvento.getText();
+        String fechaSeleccionada = comboDías.getSelectedItem() + " " + comboMeses.getSelectedItem() + " " + comboAños.getSelectedItem();
+        String horaSeleccionada = comboHoras.getSelectedItem() + ":" + comboMinutos.getSelectedItem() + " " + (amButton.isSelected() ? "AM" : "PM");
+        String descripcion = textArea.getText();
 
-                if (eventoNombre.isEmpty() || descripcion.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos.");
-                } else {
-                    JOptionPane.showMessageDialog(null, "Evento agregado:\n" + eventoNombre + "\n" + fechaSeleccionada + "\n" + horaSeleccionada + "\n" + descripcion);
-                }
+        if (eventoNombre.isEmpty() || descripcion.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos.");
+        } else {
+            JOptionPane.showMessageDialog(null, "Evento agregado:\n" + eventoNombre + "\n" + fechaSeleccionada + "\n" + horaSeleccionada + "\n" + descripcion);
+            // Cerrar el JDialog después de agregar el evento
+            Window window = SwingUtilities.getWindowAncestor(panel);  // Obtiene la ventana contenedora
+            if (window != null) {
+                window.dispose();  // Cierra la ventana
             }
-        });
+        }
+    }
+});
         buttonPanel.add(btnOk);
 
         JButton btnCancel = new JButton("Cancelar");
         btnCancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Cerrar ventana sin hacer nada
-                
+                // Cerrar la ventana actual (JDialog o JFrame)
+                Window window = SwingUtilities.getWindowAncestor(panel);  // Obtiene la ventana contenedora
+                if (window != null) {
+                    window.dispose();  // Cierra la ventana
+                }
             }
         });
         buttonPanel.add(btnCancel);
@@ -127,22 +135,7 @@ public class EventoFormulario {
 
         return panel; // Devolver el panel
     }
-
-    /*public static void main(String[] args) {
-        // Crear la ventana
-        JFrame ventana = new JFrame("Formulario de Evento");
-        EventoFormulario formulario = new EventoFormulario();
-
-        // Crear un JScrollPane para manejar el reajuste
-        JScrollPane scrollPanel = new JScrollPane(formulario.createFormularioPanel());
-        ventana.add(scrollPanel);
-
-        ventana.setSize(600, 600);
-        ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ventana.setLocationRelativeTo(null);  // Centrar la ventana
-        ventana.setVisible(true);
-        ventana.setResizable(true);
-    }*/
 }
+
 
 

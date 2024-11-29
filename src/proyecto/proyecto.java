@@ -11,6 +11,7 @@ public class proyecto {
     // Almacena la ventana del calendario y agregar eventos
     private static JDialog ventanaCalendario = null;
     private static JDialog ventanaEventoFormulario = null;
+    
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("CAP N' CAP");
@@ -85,30 +86,28 @@ public class proyecto {
     }
 
     private static void mostrarEventoFormulario(JFrame parentFrame) {
-    if (ventanaEventoFormulario == null) {
-        ventanaEventoFormulario = new JDialog(parentFrame, "Evento Formulario", true);  
+    // Verificar si el JDialog ya está abierto
+    if (ventanaEventoFormulario == null || !ventanaEventoFormulario.isVisible()) {
+        // Crear el JDialog y configurarlo si no está abierto
+        ventanaEventoFormulario = new JDialog(parentFrame, "Formulario de Evento", true);
         ventanaEventoFormulario.setSize(500, 400);
 
-        // Crear un objeto de EventoFormulario y agregar el panel que contiene el formulario
+        // Crear el panel del formulario
         EventoFormulario formulario = new EventoFormulario();
         JPanel formularioPanel = formulario.createFormularioPanel();  // Obtener el panel con los componentes
         ventanaEventoFormulario.add(formularioPanel);  // Agregar el panel al JDialog
 
-        ventanaEventoFormulario.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent b) {
-                ventanaEventoFormulario = null;
-            }
-        });
-
-        ventanaEventoFormulario.setLocationRelativeTo(parentFrame);
+        // Mostrar el JDialog
+        ventanaEventoFormulario.setLocationRelativeTo(parentFrame);  // Centrar sobre la ventana principal
         ventanaEventoFormulario.setVisible(true);
     } else {
-        JOptionPane.showMessageDialog(parentFrame, "El calendario ya está abierto.");
+        // Mostrar mensaje si ya está abierto
+        JOptionPane.showMessageDialog(parentFrame, "El formulario ya está abierto.");
     }
-
-
 }
+
+
+
 
 
     private static void visualizarEventos() {
